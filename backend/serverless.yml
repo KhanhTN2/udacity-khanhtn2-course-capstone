@@ -1,19 +1,16 @@
 org: khanhtn2
-app: serverless-todo-app-5
-service: serverless-todo-app-5
+app: serverless-mystery-diary-capstone
+service: serverless-mystery-diary-capstone
 frameworkVersion: '3'
 
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
   - serverless-plugin-tracing
-  # - serverless-reqvalidator-plugin
-  # - serverless-aws-documentation
 
 provider:
   name: aws
   runtime: nodejs16.x
-  #lambdaHashingVersion: '20201221'
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
@@ -25,11 +22,11 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: serverless-todo-app-5-${self:provider.stage}
+    TODOS_TABLE: serverless-mystery-diary-capstone-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-todo-app-5-images-khanhtn2-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: serverless-mystery-diary-capstone-images-khanhtn2-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    PROJECT_NAME: serverless-todo-app-5
+    PROJECT_NAME: serverless-mystery-diary-capstone
     INDEX_NAME: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
   logs:
     # Enable API Gateway logs
@@ -62,7 +59,6 @@ functions:
           path: todos
           cors: true
           authorizer: Auth
-          #reqValidatorName: RequestBodyValidator
     iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-get-todos-role-${self:provider.stage}
     iamRoleStatements:
       - Effect: Allow

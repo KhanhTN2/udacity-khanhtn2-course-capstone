@@ -1,7 +1,7 @@
 {
-  "name": "serverless-todo-app-5",
+  "name": "serverless-mystery-diary-capstone",
   "version": "1.0.0",
-  "description": "Serverless TODO image app",
+  "description": "Serverless mystery diary app",
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/http-errors": "^1.6.1",
