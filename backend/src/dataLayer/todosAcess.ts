@@ -98,4 +98,19 @@ export class TodosAccess {
             }
         }).promise()
     }
+
+    //Write delete todo attachmentUrl
+    async deleteTodoAttachmentUrl(todoId: string, userId: string): Promise<void> {
+        logger.info('Deleting todo item attachmentUrl', todoId)
+        await this.docClient.update({
+            TableName: this.todosTable,
+            Key: {
+                userId,
+                todoId
+            },
+            UpdateExpression: 'remove attachmentUrl'
+        }).promise()
+    }
+
+    
 } 

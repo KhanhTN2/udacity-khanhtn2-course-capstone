@@ -25,4 +25,11 @@ export class AttachmentUtils {
         })
         return url as string
     }
+
+    async deleteAttachment(todoId: string): Promise<void> {
+        await this.s3.deleteObject({
+            Bucket: this.bucketName,
+            Key: todoId
+        }).promise()
+    }
 }

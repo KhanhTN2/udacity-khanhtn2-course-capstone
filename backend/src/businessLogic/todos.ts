@@ -53,6 +53,8 @@ export async function deleteTodo(
     userId: string
 ): Promise<string> {
     logger.info('Deleting todo item', todoId)
+    //delete attachment from S3
+    await attachmentUtils.deleteAttachment(todoId)
     return todosAccess.deleteTodoItem(todoId, userId)
 }
 
@@ -75,4 +77,15 @@ export async function updateAttachmentUrl(
     const attachmentUrl = await attachmentUtils.getAttachmentUrl(todoId);
     logger.info('Updating attachment url for todo item by userId', userId, todoId, attachmentUrl)
     return todosAccess.updateTodoAttachmentUrl(todoId, userId, attachmentUrl)
+}
+
+//delete attachment business logic
+export async function deleteTodoAttachment(
+    todoId: string,
+    userId: string
+): Promise<void> {
+    logger.info('Deleting attachment for todo item', todoId)
+    //delete attachment from S3
+    await attachmentUtils.deleteAttachment(todoId)
+    return todosAccess.deleteTodoAttachmentUrl(todoId, userId)
 }

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import Auth from '../auth/Auth'
-import { getUploadUrl, uploadFile } from '../api/todos-api'
+import { getUploadUrl, uploadFile, deleteAttachmentUrl } from '../api/todos-api'
 import { History } from 'history'
 
 enum UploadState {
@@ -68,6 +68,18 @@ export class EditTodo extends React.PureComponent<
     }
   }
 
+
+  handleRemoveAttachment = async (event: React.SyntheticEvent) => {
+    event.preventDefault()
+    try {
+      await deleteAttachmentUrl(this.props.auth.getIdToken(), this.props.match.params.todoId)
+      alert('File was removed!')
+      this.props.history.push('/')
+    } catch (e) {
+      alert('Could not upload a file: ' + (e as Error).message)
+    }
+  }
+
   setUploadState(uploadState: UploadState) {
     this.setState({
       uploadState
@@ -76,9 +88,8 @@ export class EditTodo extends React.PureComponent<
 
   render() {
     return (
-      <div>
+      <><div>
         <h1>Upload new image</h1>
-
         <Form onSubmit={this.handleSubmit}>
           <Form.Field>
             <label>File</label>
@@ -86,13 +97,18 @@ export class EditTodo extends React.PureComponent<
               type="file"
               accept="image/*"
               placeholder="Image to upload"
-              onChange={this.handleFileChange}
-            />
+              onChange={this.handleFileChange} />
           </Form.Field>
 
           {this.renderButton()}
         </Form>
-      </div>
+      </div><div>
+          <h1>Remove image</h1>
+
+          <form onSubmit={this.handleRemoveAttachment}>
+            <Button type="submit">Remove</Button>
+          </form>
+        </div></>
     )
   }
 

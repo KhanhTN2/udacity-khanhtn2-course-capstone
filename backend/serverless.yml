@@ -1,6 +1,6 @@
 org: khanhtn2
-app: serverless-mystery-diary-capstone
-service: serverless-mystery-diary-capstone
+app: mystery-diary
+service: mystery-diary
 frameworkVersion: '3'
 
 plugins:
@@ -22,11 +22,11 @@ provider:
   # Use these variables in the functions and resouorces section below. For example, 
   # ${self:provider.environment.ATTACHMENT_S3_BUCKET}
   environment:
-    TODOS_TABLE: serverless-mystery-diary-capstone-${self:provider.stage}
+    TODOS_TABLE: mystery-diary-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
-    ATTACHMENT_S3_BUCKET: serverless-mystery-diary-capstone-images-khanhtn2-${self:provider.stage}
+    ATTACHMENT_S3_BUCKET: mystery-diary-images-khanhtn2-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    PROJECT_NAME: serverless-mystery-diary-capstone
+    PROJECT_NAME: mystery-diary
     INDEX_NAME: ${self:provider.environment.TODOS_CREATED_AT_INDEX}
   logs:
     # Enable API Gateway logs
@@ -153,6 +153,10 @@ functions:
         Action:
           - xray:PutTraceSegments
         Resource: "*"
+      - Effect: Allow
+        Action:
+          - s3:DeleteObject
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
 
   # TODO: Configure this function
   # Provide property for setting up CORS, Authorizer, iamRoleStatements
@@ -170,6 +174,30 @@ functions:
       - Effect: Allow
         Action:
           - s3:*
+        Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+      - Effect: Allow
+        Action:
+          - xray:PutTraceSegments
+        Resource: "*"
+    #delete todo attachment
+  DeleteTodoAttachment:
+    handler: src/lambda/http/deleteTodoAttachment.handler
+    events:
+      - http:
+          method: delete
+          path: todos/{todoId}/attachment
+          cors: true
+          authorizer: Auth
+    iamRoleStatementsName: ${self:provider.environment.PROJECT_NAME}-attachment-${self:provider.stage}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:DeleteObject
         Resource: arn:aws:s3:::${self:provider.environment.ATTACHMENT_S3_BUCKET}/*
       - Effect: Allow
         Action:
