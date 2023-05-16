@@ -100,7 +100,7 @@ export class TodosAccess {
     }
 
     //Write delete todo attachmentUrl
-    async deleteTodoAttachmentUrl(todoId: string, userId: string): Promise<void> {
+    async deleteTodoAttachmentUrl(todoId: string, userId: string): Promise<string> {
         logger.info('Deleting todo item attachmentUrl', todoId)
         await this.docClient.update({
             TableName: this.todosTable,
@@ -110,6 +110,8 @@ export class TodosAccess {
             },
             UpdateExpression: 'remove attachmentUrl'
         }).promise()
+
+        return todoId as string
     }
 
     

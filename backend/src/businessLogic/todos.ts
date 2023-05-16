@@ -83,7 +83,7 @@ export async function updateAttachmentUrl(
 export async function deleteTodoAttachment(
     todoId: string,
     userId: string
-): Promise<void> {
+): Promise<string> {
     logger.info('Deleting attachment for todo item', todoId)
     //delete attachment from S3
     await attachmentUtils.deleteAttachment(todoId)
